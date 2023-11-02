@@ -1,4 +1,5 @@
 import { createCartLine, showCartContent } from './lib/ui.js';
+import { formatNumber } from './scripts/formatNumber.js';
 
 const products = [
   {
@@ -49,6 +50,8 @@ function addProductToCart(product, quantity) {
   productTitleElement.textContent = product.title;
 
   productElement.appendChild(productTitleElement)
+  const productPriceElement = document.createElement('span');
+  productPriceElement.textContent = formatNumber(product.price);
 
 
 
@@ -95,11 +98,40 @@ function createAddToCartFrom(form){
 
 }
 
-// Ítra í gegnum þau sem fylki (`querySelectorAll` skilar NodeList)
+
 for (const form of Array.from(addToCartForms)) {
-  // Bæta submit event listener við hvert
   form.addEventListener('submit', submitHandler);
   createAddToCartFrom(form);
 }
 
-// TODO bæta við event handler á form sem submittar pöntun
+
+const orderForm = document.getElementById("orderForm");
+
+
+orderForm.addEventListener("submit", function (event) {
+  
+  event.preventDefault();
+
+  
+  const itemName = document.getElementById("itemName").value;
+  const quantity = document.getElementById("quantity").value;
+
+  fetch("/your-order-endpoint", {
+    method: "POST",
+    body: JSON.stringify({ itemName, quantity }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(response => {
+      if (response.ok) {
+        console.log("Order submitted successfully.");
+      } else {
+        console.error("Order submission failed.");
+      }
+    })
+    .catch(error => {
+      console.error("An error occurred while submitting the order:", error);
+    });
+});
+
