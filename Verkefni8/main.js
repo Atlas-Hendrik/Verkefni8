@@ -22,6 +22,7 @@ const products = [
   },
 ];
 
+
 /** Bæta vöru í körfu */
 function addProductToCart(product, quantity) {
   // Hér þarf að finna `<tbody>` í töflu og setja `cartLine` inn í það
@@ -32,6 +33,26 @@ function addProductToCart(product, quantity) {
     return;
   }
   
+  const emptyMessage = cartElement.querySelector('.empty-message')
+  const cartContent = cartElement.querySelector('.cart-content')
+
+  if (!emptyMessage|| !cartContent){
+    console.warn('fann ekki element')
+    return;
+  }
+
+  emptyMessage.classList.add('hidden')
+  cartContent.classList.remove('hidden')
+
+  const productElement = document.createElement('div')
+  const productTitleElement = document.cartElement('strong')
+  productTitleElement.textContent = product.title;
+
+  productElement.appendChild(productTitleElement)
+
+
+
+
   // TODO hér þarf að athuga hvort lína fyrir vöruna sé þegar til
   const cartLine = createCartLine(product, quantity);
   cart.appendChild(cartLine);
@@ -66,10 +87,19 @@ function submitHandler(event) {
 // Finna öll form með class="add"
 const addToCartForms = document.querySelectorAll('.add')
 
+
+
+function createAddToCartFrom(form){
+  console.log(form)
+  form.addEventListener('submit', submitHandler);
+
+}
+
 // Ítra í gegnum þau sem fylki (`querySelectorAll` skilar NodeList)
 for (const form of Array.from(addToCartForms)) {
   // Bæta submit event listener við hvert
   form.addEventListener('submit', submitHandler);
+  createAddToCartFrom(form);
 }
 
 // TODO bæta við event handler á form sem submittar pöntun
